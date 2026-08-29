@@ -30,7 +30,7 @@ const AboutSection = ({ onOpenCertificates }) => {
             transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
             transition: 'transform 0.15s ease-out',
           }}
-          className="relative glass-panel neon-corner-bracket p-8 sm:p-12 rounded-2xl border border-cyan-500/30 shadow-[0_0_40px_rgba(10,14,26,0.8)] hover:shadow-[0_0_35px_rgba(34,211,238,0.25)] transition-shadow duration-500"
+          className="relative glass-panel neon-corner-bracket p-5 sm:p-12 rounded-2xl border border-cyan-500/30 shadow-[0_0_40px_rgba(10,14,26,0.8)] hover:shadow-[0_0_35px_rgba(34,211,238,0.25)] transition-shadow duration-500"
         >
           {/* Internal Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">

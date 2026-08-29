@@ -108,7 +108,7 @@ const SkillsSection = () => {
         </motion.div>
 
         {/* 3D Orbital Platform Container */}
-        <div className="relative w-full max-w-4xl mx-auto h-[540px] sm:h-[640px] flex items-center justify-center">
+        <div className="relative w-full max-w-4xl mx-auto h-auto sm:h-[640px] flex items-center justify-center py-4 sm:py-0">
           
           {/* SVG Orbit Ring & Radial Lines (Uses exact calc matching CSS node center points) */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -249,18 +249,22 @@ const SkillsSection = () => {
           </div>
 
           {/* Mobile Fallback Grid Layout */}
-          <div className="sm:hidden grid grid-cols-2 gap-2.5 w-full mt-6 z-20">
+          <div className="sm:hidden grid grid-cols-1 gap-2.5 w-full my-4 z-20">
             {skills.map((skill) => {
               const IconComp = skill.icon;
+              const isActive = activeSkill === skill.id;
               return (
                 <div
                   key={skill.id}
-                  className="glass-panel p-2.5 rounded-xl flex items-center space-x-2.5 border border-cyan-500/30"
+                  onClick={() => setActiveSkill(isActive ? null : skill.id)}
+                  className={`glass-panel p-3 rounded-xl flex items-center space-x-3 border transition-all duration-300 ${
+                    isActive ? 'border-cyan-400 bg-cyan-950/80 shadow-[0_0_15px_#22d3ee]' : 'border-cyan-500/30'
+                  }`}
                 >
                   <IconComp className="w-5 h-5 shrink-0" style={{ color: skill.color }} />
-                  <div className="text-left">
+                  <div className="text-left flex-1 min-w-0">
                     <div className="text-xs font-bold text-white">{skill.name}</div>
-                    <div className="text-[10px] text-slate-400 truncate">{skill.description}</div>
+                    <div className="text-[11px] text-slate-300 leading-tight mt-0.5">{skill.description}</div>
                   </div>
                 </div>
               );

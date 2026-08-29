@@ -81,14 +81,14 @@ const ProjectsSection = () => {
               const isCenter = offset === 0;
 
               // Coverflow 3D Transform calculations
-              let rotateY = offset * -28; // angle rotation
-              let translateX = offset * 220; // horizontal spacing in px
-              let translateZ = isCenter ? 120 : -140; // 3D depth bringing center card forward
-              let opacity = isCenter ? 1 : Math.max(0.35, 1 - Math.abs(offset) * 0.3);
-              let scale = isCenter ? 1.05 : 0.82;
+              let rotateY = offset * -25;
+              let translateX = offset * 180;
+              let translateZ = isCenter ? 100 : -140;
+              let opacity = isCenter ? 1 : Math.max(0.2, 0.8 - Math.abs(offset) * 0.4);
+              let scale = isCenter ? 1.02 : 0.82;
 
               // Hide far cards on smaller screens
-              if (Math.abs(offset) > 2) return null;
+              if (Math.abs(offset) > 1) opacity = 0;
 
               return (
                 <motion.div
@@ -102,10 +102,10 @@ const ProjectsSection = () => {
                     opacity: opacity,
                   }}
                   transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-                  className={`absolute w-[290px] sm:w-[340px] glass-panel rounded-2xl overflow-hidden cursor-pointer border transition-colors duration-300 ${
+                  className={`absolute w-[280px] sm:w-[340px] max-w-[85vw] glass-panel rounded-2xl overflow-hidden cursor-pointer border transition-colors duration-300 ${
                     isCenter
                       ? 'border-cyan-400 shadow-[0_0_35px_rgba(34,211,238,0.4)] z-30'
-                      : 'border-cyan-500/20 hover:border-cyan-400/60 z-10'
+                      : 'border-cyan-500/20 hover:border-cyan-400/60 z-10 pointer-events-auto'
                   }`}
                 >
                   {/* Card Thumbnail / Mockup Image */}
