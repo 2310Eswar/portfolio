@@ -1,251 +1,378 @@
 /* =====================================================
-   PORTFOLIO JS - ESWAR PRASAD (ENHANCED INTERACTION & POLISH)
+   PORTFOLIO 3D FUTURISTIC TECH SCRIPT
+   Developer: Eswar S | Java Full Stack Developer
    ===================================================== */
 
 "use strict";
 
-// =====================================================
-// 1. THEME TOGGLE (Dark / Light) WITH MORPHING ICON
-// =====================================================
-const html = document.documentElement;
-const themeToggleBtn = document.getElementById('theme-toggle');
+document.addEventListener('DOMContentLoaded', () => {
+    initParticles();
+    initGSAPAnimations();
+    initTypedText();
+    initCard3DTilt();
+    initStatCounters();
+    initNavbarAndScroll();
+    initMobileMenu();
+    initContactForm();
+});
 
-function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('portfolio-theme', theme);
-}
+/* =====================================================
+   1. TSPARTICLES BACKGROUND NETWORK ENGINE
+   ===================================================== */
+function initParticles() {
+    if (typeof tsParticles === 'undefined') return;
 
-// Init from localStorage or OS preference
-const savedTheme = localStorage.getItem('portfolio-theme');
-if (savedTheme) {
-    applyTheme(savedTheme);
-} else {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
-}
+    const isMobile = window.innerWidth <= 768;
+    const particleCount = isMobile ? 35 : 75;
 
-if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+    tsParticles.load("tsparticles", {
+        fpsLimit: 60,
+        fullScreen: { enable: false },
+        particles: {
+            number: {
+                value: particleCount,
+                density: {
+                    enable: true,
+                    value_area: 800
+                }
+            },
+            color: {
+                value: ["#38bdf8", "#22d3ee", "#818cf8"]
+            },
+            shape: {
+                type: "circle"
+            },
+            opacity: {
+                value: 0.6,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.2,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 140,
+                color: "#38bdf8",
+                opacity: 0.22,
+                width: 1.2
+            },
+            move: {
+                enable: true,
+                speed: 1.2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "out",
+                bounce: false,
+                attract: {
+                    enable: true,
+                    rotateX: 600,
+                    rotateY: 1200
+                }
+            }
+        },
+        interactivity: {
+            detect_on: "window",
+            events: {
+                onhover: {
+                    enable: !isMobile,
+                    mode: "grab"
+                },
+                onclick: {
+                    enable: true,
+                    mode: "push"
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 180,
+                    line_linked: {
+                        opacity: 0.6
+                    }
+                },
+                push: {
+                    particles_nb: 3
+                }
+            }
+        },
+        retina_detect: true
     });
 }
 
-// =====================================================
-// 2. NAVBAR: SCROLL PROGRESS + ACTIVE LINK SYNC
-// =====================================================
-const navbar = document.getElementById('navbar');
-const scrollProgressBar = document.getElementById('scroll-progress-bar');
-const navLinks = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('section[id]');
+/* =====================================================
+   2. GSAP SCROLLTRIGGER REVEAL ANIMATIONS
+   ===================================================== */
+function initGSAPAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-function updateNavbarAndProgress() {
-    // Scroll state header shadow
-    if (window.scrollY > 30) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero content stagger entrance on initial load
+    gsap.from('.hero-content > *', {
+        duration: 1,
+        y: 40,
+        opacity: 0,
+        stagger: 0.15,
+        ease: 'power3.out'
+    });
+
+    gsap.from('.hero-card-3d', {
+        duration: 1.2,
+        scale: 0.85,
+        opacity: 0,
+        rotationX: 20,
+        rotationY: -20,
+        ease: 'power3.out',
+        delay: 0.3
+    });
+
+    // Section Titles
+    gsap.utils.toArray('.section-header').forEach(header => {
+        gsap.from(header, {
+            scrollTrigger: {
+                trigger: header,
+                start: 'top 85%'
+            },
+            y: 35,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+    });
+
+    // Glass Cards & Grid items (3D Rotate + Fade entrance)
+    const cardSelectors = '.glass-card, .skill-tile, .project-card, .timeline-item, .info-pill';
+    gsap.utils.toArray(cardSelectors).forEach(card => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 88%'
+            },
+            y: 45,
+            rotationX: 10,
+            opacity: 0,
+            duration: 0.85,
+            ease: 'power2.out'
+        });
+    });
+
+    // Skills progress bars animation on scroll
+    gsap.utils.toArray('.skill-progress').forEach(bar => {
+        const targetWidth = bar.style.width;
+        bar.style.width = '0%';
+        
+        ScrollTrigger.create({
+            trigger: bar,
+            start: 'top 90%',
+            onEnter: () => {
+                gsap.to(bar, {
+                    width: targetWidth,
+                    duration: 1.2,
+                    ease: 'power2.out'
+                });
+            }
+        });
+    });
+}
+
+/* =====================================================
+   3. TYPED TEXT EFFECT (HERO SUBTITLE)
+   ===================================================== */
+function initTypedText() {
+    const typedEl = document.getElementById('typed-text');
+    if (!typedEl) return;
+
+    const phrases = [
+        'Full Stack Developer',
+        'Backend Systems Engineer',
+        'Spring Boot Specialist',
+        'REST API Architect'
+    ];
+
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let typeDelay = 80;
+
+    function type() {
+        const current = phrases[phraseIdx];
+
+        if (isDeleting) {
+            typedEl.textContent = current.substring(0, charIdx - 1);
+            charIdx--;
+            typeDelay = 40;
+        } else {
+            typedEl.textContent = current.substring(0, charIdx + 1);
+            charIdx++;
+            typeDelay = 90;
+        }
+
+        if (!isDeleting && charIdx === current.length) {
+            typeDelay = 2200; // Pause at end
+            isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            typeDelay = 400;
+        }
+
+        setTimeout(type, typeDelay);
     }
 
-    // Top scroll progress bar
-    if (scrollProgressBar) {
+    setTimeout(type, 600);
+}
+
+/* =====================================================
+   4. 3D MOUSE PARALLAX TILT EFFECT FOR CARDS
+   ===================================================== */
+function initCard3DTilt() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
+
+    const tiltCards = document.querySelectorAll('.tilt-card');
+
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        });
+    });
+}
+
+/* =====================================================
+   5. STAT COUNTERS SCROLL ANIMATION
+   ===================================================== */
+function initStatCounters() {
+    const statElements = document.querySelectorAll('.stat-number');
+    if (!statElements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target'), 10);
+                let current = 0;
+                const increment = Math.max(1, Math.ceil(target / 40));
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        entry.target.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        entry.target.textContent = current;
+                    }
+                }, 30);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    statElements.forEach(el => observer.observe(el));
+}
+
+/* =====================================================
+   6. NAVBAR SCROLL PROGRESS & ACTIVE LINK OBSERVER
+   ===================================================== */
+function initNavbarAndScroll() {
+    const navbar = document.getElementById('navbar');
+    const progressBar = document.getElementById('scroll-progress-bar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    function onScroll() {
         const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        scrollProgressBar.style.width = scrolled + '%';
+        
+        // Progress bar width
+        if (progressBar && height > 0) {
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + '%';
+        }
+
+        // Navbar blur background toggle
+        if (winScroll > 40) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
     }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Active Section Link Sync
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                });
+            }
+        });
+    }, { rootMargin: '-40% 0px -40% 0px' });
+
+    sections.forEach(sec => sectionObserver.observe(sec));
 }
 
-window.addEventListener('scroll', updateNavbarAndProgress, { passive: true });
-updateNavbarAndProgress(); // initial run
+/* =====================================================
+   7. MOBILE HAMBURGER MENU
+   ===================================================== */
+function initMobileMenu() {
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-// Active nav link sync with IntersectionObserver
-const navObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            navLinks.forEach(link => {
-                link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-            });
-        }
-    });
-}, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
+    if (!mobileBtn || !navMenu) return;
 
-sections.forEach(section => navObserver.observe(section));
-
-// =====================================================
-// 3. MOBILE MENU TOGGLE
-// =====================================================
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const navMenu = document.getElementById('nav-menu');
-
-if (mobileMenuBtn && navMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
+    mobileBtn.addEventListener('click', () => {
         const isOpen = navMenu.classList.toggle('open');
-        mobileMenuBtn.setAttribute('aria-expanded', isOpen);
+        mobileBtn.classList.toggle('open', isOpen);
     });
 
-    // Close mobile menu on nav link click
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('open');
-            mobileMenuBtn.setAttribute('aria-expanded', false);
+            mobileBtn.classList.remove('open');
         });
     });
 }
 
-// =====================================================
-// 4. POLISHED TYPED TEXT EFFECT (Hero subtitle)
-// =====================================================
-const typedEl = document.getElementById('typed-text');
-const typedPhrases = [
-    'Scalable Backend Systems',
-    'High-Performance REST APIs',
-    'Robust Microservices in Java'
-];
+/* =====================================================
+   8. CONTACT FORM SUBMISSION (FormSubmit API + Mailto Fallback)
+   ===================================================== */
+function initContactForm() {
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+    const submitBtn = document.getElementById('form-submit-btn');
 
-if (typedEl) {
-    let phraseIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typingDelay = 90;
+    if (!contactForm) return;
 
-    function typeEffect() {
-        const currentPhrase = typedPhrases[phraseIndex];
-
-        if (isDeleting) {
-            typedEl.textContent = currentPhrase.substring(0, charIndex - 1);
-            charIndex--;
-            typingDelay = 45;
-        } else {
-            typedEl.textContent = currentPhrase.substring(0, charIndex + 1);
-            charIndex++;
-            typingDelay = 90;
-        }
-
-        if (!isDeleting && charIndex === currentPhrase.length) {
-            typingDelay = 2200; // Pause at full phrase
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            phraseIndex = (phraseIndex + 1) % typedPhrases.length;
-            typingDelay = 400;
-        }
-
-        setTimeout(typeEffect, typingDelay);
-    }
-
-    setTimeout(typeEffect, 600);
-}
-
-// =====================================================
-// 5. HERO PARALLAX (Mouse movement on Orb & Code Card)
-// =====================================================
-const heroSection = document.getElementById('home');
-const glowOrb = document.querySelector('.glow-orb');
-const rings = document.querySelectorAll('.rotating-ring');
-const gridOverlay = document.querySelector('.grid-overlay');
-const heroCard = document.querySelector('.visual-card-glass');
-
-if (heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    heroSection.addEventListener('mousemove', (e) => {
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-
-        const moveX = (clientX / innerWidth - 0.5) * 30;
-        const moveY = (clientY / innerHeight - 0.5) * 30;
-
-        if (glowOrb) {
-            glowOrb.style.transform = `translate(${moveX * 1.5}px, ${moveY * 1.5}px)`;
-        }
-        if (gridOverlay) {
-            gridOverlay.style.transform = `translate(${moveX * 0.4}px, ${moveY * 0.4}px)`;
-        }
-        if (heroCard) {
-            const rotateX = -(clientY / innerHeight - 0.5) * 12;
-            const rotateY = (clientX / innerWidth - 0.5) * 12;
-            heroCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-        }
-    });
-
-    heroSection.addEventListener('mouseleave', () => {
-        if (glowOrb) glowOrb.style.transform = '';
-        if (gridOverlay) gridOverlay.style.transform = '';
-        if (heroCard) heroCard.style.transform = '';
-    });
-}
-
-// =====================================================
-// 6. SCROLL REVEAL (Staggered Animations)
-// =====================================================
-const revealElements = document.querySelectorAll('.scroll-reveal');
-
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            revealObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-
-revealElements.forEach(el => revealObserver.observe(el));
-
-// =====================================================
-// 7. SKILL PROGRESS BARS ANIMATION
-// =====================================================
-const skillObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const bars = entry.target.querySelectorAll('.skill-progress');
-            bars.forEach(bar => {
-                const targetWidth = bar.style.width || bar.dataset.targetWidth;
-                bar.style.width = '0';
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        bar.style.width = targetWidth;
-                    });
-                });
-            });
-            skillObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.2 });
-
-document.querySelectorAll('.skill-category-card').forEach(card => {
-    card.querySelectorAll('.skill-progress').forEach(bar => {
-        if (bar.style.width) {
-            bar.dataset.targetWidth = bar.style.width;
-        }
-    });
-    skillObserver.observe(card);
-});
-
-// =====================================================
-// 8. PROJECT CARDS & BUTTON TILT EFFECTS
-// =====================================================
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.project-card, .stat-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-            card.style.transform = `translateY(-8px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`;
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-        });
-    });
-}
-
-// =====================================================
-// 9. CONTACT FORM HANDLING (FormSubmit API + Mail Fallback)
-// =====================================================
-const contactForm = document.getElementById('contact-form');
-const formStatus = document.getElementById('form-status');
-const submitBtn = document.getElementById('form-submit-btn');
-
-if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -255,7 +382,7 @@ if (contactForm) {
         const messageVal = document.getElementById('form-message').value.trim();
 
         if (!nameVal || !emailVal || !subjectVal || !messageVal) {
-            showFormStatus('Please fill in all fields.', 'error');
+            showFormStatus('Please complete all required fields.', 'error');
             return;
         }
 
@@ -265,9 +392,7 @@ if (contactForm) {
             return;
         }
 
-        const fullMessage = `Name: ${nameVal}\nEmail: ${emailVal}\nSubject: ${subjectVal}\n\n${messageVal}`;
-
-        // Disable button & indicate loading
+        // Disable button while sending
         submitBtn.disabled = true;
         const btnText = submitBtn.querySelector('span');
         if (btnText) btnText.textContent = 'Sending...';
@@ -285,8 +410,7 @@ if (contactForm) {
                     _replyto: emailVal,
                     _subject: `Portfolio Message from ${nameVal}: ${subjectVal}`,
                     message: messageVal,
-                    _captcha: "false",
-                    _template: "table"
+                    _captcha: "false"
                 })
             });
 
@@ -296,58 +420,33 @@ if (contactForm) {
 
             if (response.ok && data.success !== "false") {
                 contactForm.reset();
-                showFormStatus('Message sent successfully! Check your inbox.', 'success');
+                showFormStatus('Message sent successfully! Thank you.', 'success');
             } else {
-                openMailClient(fullMessage, subjectVal);
+                fallbackMailto(nameVal, emailVal, subjectVal, messageVal);
             }
         } catch (err) {
-            console.error('FormSubmit API error:', err);
+            console.error('Contact Form error:', err);
             submitBtn.disabled = false;
             if (btnText) btnText.textContent = 'Send Message';
-            openMailClient(fullMessage, subjectVal);
+            fallbackMailto(nameVal, emailVal, subjectVal, messageVal);
         }
     });
-}
 
-function openMailClient(fullMessage, subjectVal) {
-    try {
+    function fallbackMailto(name, email, subject, message) {
         const mailTo = 'eswarrawsr2006@gmail.com';
-        const mailUrl = `mailto:${mailTo}?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent(fullMessage)}`;
+        const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+        const mailUrl = `mailto:${mailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailUrl;
-        showFormStatus('Opening default email application...', 'info');
-        if (contactForm) contactForm.reset();
-    } catch (err) {
-        console.warn('Could not open mail client.', err);
-        showFormStatus('Could not open mail client. Please email directly to eswarrawsr2006@gmail.com', 'error');
+        showFormStatus('Opening default mail client...', 'success');
+        contactForm.reset();
+    }
+
+    function showFormStatus(message, type) {
+        if (!formStatus) return;
+        formStatus.textContent = message;
+        formStatus.className = 'form-status ' + type;
+        setTimeout(() => {
+            formStatus.className = 'form-status';
+        }, 6000);
     }
 }
-
-function showFormStatus(message, type) {
-    if (!formStatus) return;
-    formStatus.textContent = message;
-    formStatus.className = 'form-status ' + type;
-    setTimeout(() => {
-        formStatus.className = 'form-status';
-    }, 6000);
-}
-
-// =====================================================
-// 10. RESUME DOWNLOAD HANDLER
-// =====================================================
-const resumeLink = document.getElementById('resume-download');
-if (resumeLink) {
-    resumeLink.addEventListener('click', async (e) => {
-        const href = resumeLink.getAttribute('href');
-        try {
-            const resp = await fetch(href, { method: 'HEAD' });
-            if (!resp.ok) {
-                e.preventDefault();
-                alert('Resume PDF not found.');
-            }
-        } catch (err) {
-            console.warn('Resume check error:', err);
-        }
-    });
-}
-
-console.log('%c Eswar S | Portfolio Enhanced Design v2.0', 'color: #6366f1; font-size: 16px; font-weight: bold;');

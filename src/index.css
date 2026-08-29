@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-dark: #0a0e1a;
+    --color-bg-card: rgba(13, 20, 36, 0.75);
+    --color-cyan-glow: #22d3ee;
+    --color-sky-glow: #38bdf8;
+  }
+
+  body {
+    background-color: #0a0e1a;
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom 3D Perspective & Grid Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1500 {
+  perspective: 1500px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: rgba(13, 20, 36, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-glow {
+  background: rgba(13, 20, 36, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 25px rgba(34, 211, 238, 0.25), inset 0 0 15px rgba(34, 211, 238, 0.1);
+}
+
+/* Neon Corner Brackets (Scan / Frame Effect like Screenshot 1) */
+.neon-corner-bracket {
+  position: relative;
+}
+
+.neon-corner-bracket::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 36px;
+  height: 36px;
+  border-top: 3px solid #22d3ee;
+  border-left: 3px solid #22d3ee;
+  box-shadow: -3px -3px 12px #22d3ee, inset 1px 1px 6px rgba(34, 211, 238, 0.6);
+  border-top-left-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.neon-corner-bracket::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 36px;
+  height: 36px;
+  border-bottom: 3px solid #22d3ee;
+  border-right: 3px solid #22d3ee;
+  box-shadow: 3px 3px 12px #22d3ee, inset -1px -1px 6px rgba(34, 211, 238, 0.6);
+  border-bottom-right-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 3D Perspective Grid Floor */
+.grid-floor-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.grid-floor {
+  position: absolute;
+  width: 200%;
+  height: 1000px;
+  left: -50%;
+  bottom: -400px;
+  background-image: 
+    linear-gradient(to right, rgba(34, 211, 238, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: perspective(600px) rotateX(75deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 10%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 10%, transparent 80%);
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 500px;
+  }
+}
+
+/* Hexagon Clip Path for Skills Tiles */
+.clip-hexagon {
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+}
+
+.hexagon-border {
+  position: relative;
+}
+
+.hexagon-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.8), rgba(56, 189, 248, 0.2), rgba(34, 211, 238, 0.8));
+  z-index: -1;
+}
+
+/* Custom Input Bottom Cyan Glow State (Screenshot 2 Match) */
+.cyan-input {
+  background: rgba(10, 14, 26, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.cyan-input:focus {
+  outline: none;
+  border-color: rgba(34, 211, 238, 0.8);
+  border-bottom: 2px solid #22d3ee;
+  box-shadow: 0 4px 15px -2px rgba(34, 211, 238, 0.3), inset 0 0 10px rgba(34, 211, 238, 0.1);
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0e1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2747;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
+
+/* Gradient Shimmer Animation for Divider Line */
+@keyframes shimmerMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.animate-shimmer {
+  animation: shimmerMove 3.5s infinite linear;
+}
