@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Coffee, Layers, Leaf, Database, Cable, Cpu, GitBranch, Github, Network, Sparkles } from 'lucide-react';
 
 const SkillsSection = () => {
   const [activeSkill, setActiveSkill] = useState(null);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 9 Symmetrically Arranged Skills (Clockwise starting from 12 o'clock = 270°, 40° intervals)
   const skills = [
@@ -81,8 +90,8 @@ const SkillsSection = () => {
     },
   ];
 
-  // Fixed Orbit Circle Radius in Pixels (Equal radius along X and Y axes)
-  const orbitRadiusPx = 230;
+  // Responsive Orbit Circle Radius in Pixels (135px on mobile, 230px on desktop)
+  const orbitRadiusPx = isMobile ? 135 : 230;
 
   return (
     <section id="skills" className="relative min-h-screen py-24 px-4 sm:px-6 lg:px-8 z-10 flex flex-col justify-center">
@@ -93,7 +102,7 @@ const SkillsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="mb-10"
+          className="mb-8 sm:mb-10"
         >
           <div className="inline-flex items-center space-x-2 text-xs font-mono text-cyan-400 tracking-wider uppercase mb-1">
             <Sparkles className="w-3.5 h-3.5" />
@@ -108,9 +117,9 @@ const SkillsSection = () => {
         </motion.div>
 
         {/* 3D Orbital Platform Container */}
-        <div className="relative w-full max-w-4xl mx-auto h-auto sm:h-[640px] flex items-center justify-center py-4 sm:py-0">
+        <div className="relative w-full max-w-4xl mx-auto h-[380px] sm:h-[640px] flex items-center justify-center">
           
-          {/* SVG Orbit Ring & Radial Lines (Uses exact calc matching CSS node center points) */}
+          {/* SVG Orbit Ring & Radial Lines */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
             <defs>
               <linearGradient id="lineGlow" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -123,16 +132,16 @@ const SkillsSection = () => {
               </filter>
             </defs>
 
-            {/* Orbit Circle (Fixed pixel radius passing exactly through every hexagon center) */}
+            {/* Orbit Circle (Scales automatically on mobile/desktop) */}
             <circle
               cx="50%"
               cy="50%"
               r={orbitRadiusPx}
               fill="none"
-              stroke="rgba(34, 211, 238, 0.3)"
+              stroke="rgba(34, 211, 238, 0.35)"
               strokeWidth="1.5"
               strokeDasharray="6 6"
-              className="hidden sm:block animate-[spin_60s_linear_infinite] origin-center"
+              className="animate-[spin_60s_linear_infinite] origin-center"
             />
 
             {/* Straight Radial Connecting Lines from Center Orb to Each Hexagon Center */}
@@ -149,10 +158,10 @@ const SkillsSection = () => {
                   y1="50%"
                   x2={`calc(50% + ${dx}px)`}
                   y2={`calc(50% + ${dy}px)`}
-                  stroke={isActive ? '#22d3ee' : 'rgba(56, 189, 248, 0.25)'}
+                  stroke={isActive ? '#22d3ee' : 'rgba(56, 189, 248, 0.3)'}
                   strokeWidth={isActive ? '2.5' : '1.5'}
                   filter={isActive ? 'url(#glow)' : 'none'}
-                  className="transition-all duration-300 hidden sm:block"
+                  className="transition-all duration-300"
                 />
               );
             })}
@@ -161,47 +170,47 @@ const SkillsSection = () => {
           {/* Central 3D Disc Platform */}
           <div className="relative z-10 flex flex-col items-center justify-center">
             {/* 3D Circular Disc Base */}
-            <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-b from-navy-800 to-navy-950 border-4 border-cyan-500/40 shadow-[0_0_50px_rgba(34,211,238,0.35)] flex items-center justify-center group transform transition-transform duration-500 hover:scale-105">
+            <div className="relative w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-gradient-to-b from-navy-800 to-navy-950 border-3 sm:border-4 border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,0.35)] flex items-center justify-center group transform transition-transform duration-500 hover:scale-105">
               {/* Outer Glowing Ring */}
               <div className="absolute inset-0 rounded-full border border-cyan-400/60 animate-ping opacity-20" />
-              <div className="absolute -inset-3 rounded-full border border-sky-400/30 animate-[spin_18s_linear_infinite]" />
+              <div className="absolute -inset-2.5 sm:-inset-3 rounded-full border border-sky-400/30 animate-[spin_18s_linear_infinite]" />
 
               {/* Floating 3D Java Coffee Cup Icon */}
               <motion.div
-                animate={{ y: [-6, 6, -6] }}
+                animate={{ y: [-4, 4, -4] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 className="relative flex flex-col items-center justify-center cursor-pointer"
               >
                 {/* Coffee steam glowing cyan/orange lines */}
-                <div className="flex space-x-1.5 mb-1 opacity-90">
+                <div className="flex space-x-1 sm:space-x-1.5 mb-0.5 sm:mb-1 opacity-90">
                   <motion.span
-                    animate={{ y: [-4, -12, -4], opacity: [0.4, 1, 0.4] }}
+                    animate={{ y: [-3, -9, -3], opacity: [0.4, 1, 0.4] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="w-1.5 h-3.5 rounded-full bg-gradient-to-t from-orange-500 to-cyan-400"
+                    className="w-1 sm:w-1.5 h-2.5 sm:h-3.5 rounded-full bg-gradient-to-t from-orange-500 to-cyan-400"
                   />
                   <motion.span
-                    animate={{ y: [-2, -10, -2], opacity: [0.6, 1, 0.6] }}
+                    animate={{ y: [-2, -8, -2], opacity: [0.6, 1, 0.6] }}
                     transition={{ duration: 2.3, repeat: Infinity, delay: 0.3 }}
-                    className="w-1.5 h-4.5 rounded-full bg-gradient-to-t from-orange-400 to-cyan-300"
+                    className="w-1 sm:w-1.5 h-3 sm:h-4.5 rounded-full bg-gradient-to-t from-orange-400 to-cyan-300"
                   />
                   <motion.span
-                    animate={{ y: [-5, -13, -5], opacity: [0.3, 0.9, 0.3] }}
+                    animate={{ y: [-4, -10, -4], opacity: [0.3, 0.9, 0.3] }}
                     transition={{ duration: 1.8, repeat: Infinity, delay: 0.6 }}
-                    className="w-1.5 h-3.5 rounded-full bg-gradient-to-t from-amber-500 to-cyan-400"
+                    className="w-1 sm:w-1.5 h-2.5 sm:h-3.5 rounded-full bg-gradient-to-t from-amber-500 to-cyan-400"
                   />
                 </div>
 
                 {/* Coffee Cup Graphic */}
-                <Coffee className="w-12 h-12 sm:w-14 sm:h-14 text-cyan-400 drop-shadow-[0_0_18px_rgba(34,211,238,0.9)]" />
-                <span className="mt-1 font-mono text-xs sm:text-sm font-extrabold text-cyan-300 tracking-widest uppercase">
+                <Coffee className="w-8 h-8 sm:w-14 sm:h-14 text-cyan-400 drop-shadow-[0_0_18px_rgba(34,211,238,0.9)]" />
+                <span className="mt-0.5 font-mono text-[10px] sm:text-sm font-extrabold text-cyan-300 tracking-widest uppercase">
                   JAVA
                 </span>
               </motion.div>
             </div>
           </div>
 
-          {/* 9 Hexagon Glass Tiles Positioned Symmetrically in Clockwise Order */}
-          <div className="hidden sm:block absolute inset-0 pointer-events-none">
+          {/* 9 Hexagon Glass Tiles Positioned Symmetrically in Orbital Format */}
+          <div className="absolute inset-0 pointer-events-none">
             {skills.map((skill, index) => {
               const rad = (skill.angle * Math.PI) / 180;
               const dx = Math.round(orbitRadiusPx * Math.cos(rad));
@@ -217,56 +226,34 @@ const SkillsSection = () => {
                     top: `calc(50% + ${dy}px)`,
                   }}
                   animate={{
-                    y: [0, -5, 0],
+                    y: [0, -4, 0],
                   }}
                   transition={{
                     duration: 3.5 + (index % 4) * 0.4,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
+                  onClick={() => setActiveSkill(isActive ? null : skill.id)}
                   onMouseEnter={() => setActiveSkill(skill.id)}
                   onMouseLeave={() => setActiveSkill(null)}
                   className="absolute pointer-events-auto cursor-pointer group"
                 >
                   <div
-                    className={`-translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-32 sm:h-32 glass-panel clip-hexagon flex flex-col items-center justify-center p-2.5 transition-all duration-300 ${
+                    className={`-translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-32 sm:h-32 glass-panel clip-hexagon flex flex-col items-center justify-center p-1 sm:p-2.5 transition-all duration-300 ${
                       isActive
-                        ? 'bg-cyan-950/95 border-cyan-400 scale-110 shadow-[0_0_35px_#22d3ee] z-30'
+                        ? 'bg-cyan-950/95 border-cyan-400 scale-110 shadow-[0_0_25px_#22d3ee] z-30'
                         : 'hover:scale-105 hover:bg-navy-900/90 z-20'
                     }`}
                   >
                     <IconComp
-                      className="w-6 h-6 sm:w-7 sm:h-7 mb-1 transition-transform duration-300 group-hover:scale-110 shrink-0"
+                      className="w-4 h-4 sm:w-7 sm:h-7 mb-0.5 sm:mb-1 transition-transform duration-300 group-hover:scale-110 shrink-0"
                       style={{ color: skill.color }}
                     />
-                    <span className="text-[11px] sm:text-xs font-bold font-display text-white tracking-wide text-center leading-tight max-w-[85px] break-words">
+                    <span className="text-[9px] sm:text-xs font-bold font-display text-white tracking-wide text-center leading-tight max-w-[55px] sm:max-w-[85px] break-words">
                       {skill.name}
                     </span>
                   </div>
                 </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Mobile Fallback Grid Layout */}
-          <div className="sm:hidden grid grid-cols-1 gap-2.5 w-full my-4 z-20">
-            {skills.map((skill) => {
-              const IconComp = skill.icon;
-              const isActive = activeSkill === skill.id;
-              return (
-                <div
-                  key={skill.id}
-                  onClick={() => setActiveSkill(isActive ? null : skill.id)}
-                  className={`glass-panel p-3 rounded-xl flex items-center space-x-3 border transition-all duration-300 ${
-                    isActive ? 'border-cyan-400 bg-cyan-950/80 shadow-[0_0_15px_#22d3ee]' : 'border-cyan-500/30'
-                  }`}
-                >
-                  <IconComp className="w-5 h-5 shrink-0" style={{ color: skill.color }} />
-                  <div className="text-left flex-1 min-w-0">
-                    <div className="text-xs font-bold text-white">{skill.name}</div>
-                    <div className="text-[11px] text-slate-300 leading-tight mt-0.5">{skill.description}</div>
-                  </div>
-                </div>
               );
             })}
           </div>
