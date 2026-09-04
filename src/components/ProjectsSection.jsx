@@ -8,6 +8,16 @@ const ProjectsSection = () => {
   const projects = [
     {
       id: 1,
+      title: 'Campus Complaint & Resolution System',
+      category: 'Full-Stack / Spring Boot & React',
+      image: '/assets/campus_complaint.jpg',
+      techStack: 'Spring Boot, React, JWT, Docker, MySQL, Render, Vercel',
+      description: 'Campus issue management platform supporting 4 user roles, issue lifecycles, OTP recovery, and analytics.',
+      demoUrl: 'https://complient-management-frontend-i75f.vercel.app/',
+      githubUrl: 'https://github.com/2310Eswar/Complient_Managent_Backend.git',
+    },
+    {
+      id: 2,
       title: 'Online Bus Booking Portal',
       category: 'Full-Stack / Java',
       image: '/assets/project1.webp',
@@ -17,7 +27,7 @@ const ProjectsSection = () => {
       githubUrl: 'https://github.com/2310Eswar/Online-Bus-Booking-System.git',
     },
     {
-      id: 2,
+      id: 3,
       title: 'Rent Vehicle Management System',
       category: 'Backend Architecture',
       image: '/assets/ecommerce_backend.png',
@@ -27,7 +37,7 @@ const ProjectsSection = () => {
       githubUrl: 'https://github.com/2310Eswar/RENT-OF-VECHICLE-RESTAPI.git',
     },
     {
-      id: 3,
+      id: 4,
       title: 'E-Commerce Microservices Engine',
       category: 'Distributed Microservices',
       image: '/assets/project2.webp',
@@ -151,7 +161,7 @@ const ProjectsSection = () => {
                         className="flex-1 inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all duration-300 truncate"
                       >
                         <Globe className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">{project.demoUrl.replace('https://', '')}</span>
+                        <span className="truncate">{project.demoUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                       </a>
 
                       <a
